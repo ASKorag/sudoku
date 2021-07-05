@@ -1,6 +1,39 @@
 module.exports = function solveSudoku(board) {
-  const BOARD_SIZE = board.length
+  const copyBoard = board.map(arr => {
+    return [...arr]
+  })
+
+  const BOARD_SIZE = copyBoard.length
   const SECTOR_SIZE = Math.sqrt(BOARD_SIZE)
+
+  function solve() {
+    const currentPlace = findEmptyPlace(copyBoard)
+
+    if (currentPlace === null) {
+      return true
+    }
+
+    for (let i = 1; i < BOARD_SIZE + 1; i++) {
+      const isValidNum = checkNum(i, currentPlace, copyBoard)
+
+      if (isValidNum) {
+        const { rowIndex, colIndex } = currentPlace
+
+        copyBoard[rowIndex][colIndex] = i
+
+        if (solve()) {
+          return true
+        }
+
+        copyBoard[rowIndex][colIndex] = 0
+      }
+    }
+
+    return false
+  }
+
+  solve(copyBoard)
+  return copyBoard
 }
 
 function findEmptyPlace(board) {
