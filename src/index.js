@@ -5,8 +5,8 @@ module.exports = function solveSudoku(board) {
 
 function findEmptyPlace(board) {
   board.forEach((row, rowIndex) => {
-    row.forEach((num, colIndex) => {
-      if (num === 0) {
+    row.forEach((value, colIndex) => {
+      if (value === 0) {
         return { rowIndex, colIndex }
       }
     })
