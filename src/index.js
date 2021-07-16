@@ -19,24 +19,18 @@ function findEmptyPlace(board) {
     }
     return null;
 }
-function checkNum(num, pos, board) {
+function isNumValid(num, pos, board) {
     const { row, col } = pos;
-    for (let c = 0; c < board.length; c++) {
-        const value = board[row][c];
-        if (value === num) {
-            return false;
-        }
-    }
-    for (let r = 0; r < board.length; r++) {
-        const value = board[r][col];
-        if (value === num) {
-            return false;
-        }
+    const checkedRow = board[row];
+    const checkedCol = board.map(rowArr => rowArr[col]);
+    if (isNumInLine(num, checkedRow) || isNumInLine(num, checkedCol)) {
+        return false;
     }
     const boardSize = board.length;
     const sectorSize = Math.sqrt(boardSize);
-    const sectorBeginRow = sectorSize * Math.floor(row / sectorSize);
-    const sectorBeginCol = sectorSize * Math.floor(col / sectorSize);
+    const getBeginSector = setSectorSize(sectorSize);
+    const sectorBeginRow = getBeginSector(row);
+    const sectorBeginCol = getBeginSector(col);
     for (let r = sectorBeginRow; r < sectorBeginRow + sectorSize; r++) {
         for (let c = sectorBeginCol; c < sectorBeginCol + sectorSize; c++) {
             const value = board[r][c];
@@ -54,7 +48,7 @@ function recursiveSolve(board) {
         return true;
     }
     for (let i = 1; i < boardSize + 1; i++) {
-        const isValidNum = checkNum(i, currentPos, board);
+        const isValidNum = isNumValid(i, currentPos, board);
         if (isValidNum) {
             const { row, col } = currentPos;
             board[row][col] = i;
@@ -65,4 +59,12 @@ function recursiveSolve(board) {
         }
     }
     return false;
+}
+function isNumInLine(num, line) {
+    return line.some(value => value === num);
+}
+function setSectorSize(sectorSize) {
+    return function (numLine) {
+        return sectorSize * Math.floor(numLine / sectorSize);
+    };
 }

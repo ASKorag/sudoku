@@ -27,42 +27,26 @@ function findEmptyPlace(board: number[][]): TPos | null {
   return null
 }
 
-function checkNum(num: number, pos: TPos, board: number[][]) {
+function isNumValid(num: number, pos: TPos, board: number[][]) {
   const { row, col } = pos
+  const checkedRow = board[row]
+  const checkedCol = board.map(rowArr => rowArr[col])
 
-  //-----------Check Row------------
-
-  for (let c = 0; c < board.length; c++) {
-    const value = board[row][c]
-
-    if (value === num ) {
-      return false
-    }
+  if (isNumInLine(num, checkedRow) || isNumInLine(num, checkedCol)) {
+    return false
   }
-
-  //-----------Check Column------------
-
-  for (let r = 0; r < board.length; r++) {
-    const value = board[r][col]
-
-    if (value === num ) {
-      return false
-    }
-  }
-
   //-----------Check Sector------------
-
   const boardSize = board.length
   const sectorSize = Math.sqrt(boardSize)
 
-  const sectorBeginRow = sectorSize * Math.floor(row / sectorSize)
-  const sectorBeginCol = sectorSize * Math.floor(col / sectorSize)
+  const getBeginSector = setSectorSize(sectorSize)
+  const sectorBeginRow = getBeginSector(row)
+  const sectorBeginCol = getBeginSector(col)
 
   for (let r = sectorBeginRow; r < sectorBeginRow + sectorSize; r++) {
     for (let c = sectorBeginCol; c < sectorBeginCol + sectorSize; c++) {
       const value = board[r][c]
-
-      if (value === num ) {
+      if (value === num) {
         return false
       }
     }
@@ -81,7 +65,7 @@ function recursiveSolve(board: number[][]) {
   }
 
   for (let i = 1; i < boardSize + 1; i++) {
-    const isValidNum = checkNum(i, currentPos, board)
+    const isValidNum = isNumValid(i, currentPos, board)
 
     if (isValidNum) {
       const { row, col } = currentPos
@@ -96,4 +80,14 @@ function recursiveSolve(board: number[][]) {
   }
 
   return false
+}
+
+function isNumInLine(num: number, line: number[]) {
+  return line.some(value => value === num)
+}
+
+function setSectorSize(sectorSize: number) {
+  return function(numLine: number) {
+    return sectorSize * Math.floor(numLine / sectorSize)
+  }
 }
