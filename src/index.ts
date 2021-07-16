@@ -9,25 +9,18 @@ module.exports = function solveSudoku(board: number[][]) {
   return copyBoard
 }
 
-function findEmptyPlace(board: number[][]): TPos | null {
-  for (let r = 0; r < board.length; r++) {
-    for (let c = 0; c < board.length; c++) {
-      const value = board[r][c]
+function getEmptyPlace(board: number[][]): TPos | null {
+  const rowIndex = board.findIndex(rowLine => rowLine.includes(0))
 
-      if (value === 0) {
-        const pos: TPos = {
-          row: r,
-          col: c,
-        }
-        return pos
-      }
-    }
+  if (rowIndex !== -1) {
+    const colIndex = board[rowIndex].indexOf(0)
+    return { row: rowIndex, col: colIndex }
   }
 
   return null
 }
 
-function isNumValid(num: number, pos: TPos, board: number[][]) {
+function isValidNum(num: number, pos: TPos, board: number[][]) {
   const { row, col } = pos
   const checkedRow = board[row]
   const checkedCol = board.map(rowArr => rowArr[col])
@@ -58,16 +51,13 @@ function isNumValid(num: number, pos: TPos, board: number[][]) {
 function recursiveSolve(board: number[][]) {
   const boardSize = board.length
 
-  const currentPos = findEmptyPlace(board)
-
+  const currentPos = getEmptyPlace(board)
   if (currentPos === null) {
     return true
   }
 
   for (let i = 1; i < boardSize + 1; i++) {
-    const isValidNum = isNumValid(i, currentPos, board)
-
-    if (isValidNum) {
+    if (isValidNum(i, currentPos, board)) {
       const { row, col } = currentPos
       board[row][col] = i
 
@@ -87,7 +77,7 @@ function isNumInLine(num: number, line: number[]) {
 }
 
 function setSectorSize(sectorSize: number) {
-  return function(numLine: number) {
+  return function (numLine: number) {
     return sectorSize * Math.floor(numLine / sectorSize)
   }
 }
