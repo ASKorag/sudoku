@@ -35,7 +35,7 @@ function checkNum(num: number, pos: TPos, board: number[][]) {
   for (let c = 0; c < board.length; c++) {
     const value = board[row][c]
 
-    if (value === num && c !== col) {
+    if (value === num ) {
       return false
     }
   }
@@ -45,7 +45,7 @@ function checkNum(num: number, pos: TPos, board: number[][]) {
   for (let r = 0; r < board.length; r++) {
     const value = board[r][col]
 
-    if (value === num && r !== row) {
+    if (value === num ) {
       return false
     }
   }
@@ -62,7 +62,7 @@ function checkNum(num: number, pos: TPos, board: number[][]) {
     for (let c = sectorBeginCol; c < sectorBeginCol + sectorSize; c++) {
       const value = board[r][c]
 
-      if (value === num && r !== row && c !== col) {
+      if (value === num ) {
         return false
       }
     }
